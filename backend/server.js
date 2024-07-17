@@ -4,6 +4,9 @@ const path = require('path');
 const app = express();
 const port = 3000;
 
+// Serve static files from the frontend directory
+app.use(express.static(path.join(__dirname, '../frontend')));
+
 // Load JSON data
 const filePath = path.join(__dirname, 'data.json');
 const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));

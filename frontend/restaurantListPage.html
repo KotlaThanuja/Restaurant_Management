@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant List</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Restaurant List</h1>
+    </header>
+    <main>
+        <div id="restaurant-list">
+            <!-- Restaurant list will be loaded here -->
+        </div>
+        <div id="pagination">
+            <!-- Pagination controls will be loaded here -->
+        </div>
+    </main>
+    <script src="scripts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const page = urlParams.get('page') || 1;
+            const perPage = urlParams.get('n') || 10;
+            fetchRestaurants(page, perPage);
+        });
+    </script>
+</body>
+</html>
