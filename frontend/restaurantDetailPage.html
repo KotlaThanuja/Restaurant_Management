@@ -4,31 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restaurant Detail</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+        }
+        .restaurant-detail {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 600px;
+            margin: auto;
+        }
+        h1 {
+            color: #0056b3;
+        }
+        .detail-item {
+            margin-bottom: 10px;
+        }
+        .label {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <header>
+    <div class="restaurant-detail" id="restaurant-detail">
         <h1>Restaurant Details</h1>
-        <a id="back-to-list" href="#">Back to List</a>
-    </header>
-    <main>
-        <div id="restaurant-detail">
-            <!-- Restaurant details will be loaded here -->
-        </div>
-    </main>
-    <script src="scripts.js"></script>
+        <div class="detail-item"><span class="label">Restaurant Name:</span> <span id="name"></span></div>
+        <div class="detail-item"><span class="label">Address:</span> <span id="address"></span></div>
+        <div class="detail-item"><span class="label">City:</span> <span id="city"></span></div>
+        <div class="detail-item"><span class="label">Cuisines:</span> <span id="cuisines"></span></div>
+        <div class="detail-item"><span class="label">Average Cost for Two:</span> <span id="cost"></span></div>
+        <div class="detail-item"><span class="label">Rating:</span> <span id="rating"></span></div>
+        <!-- Add more fields as needed -->
+    </div>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        // Function to get query parameters
+        function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
-            const id = urlParams.get('id');
-            const page = urlParams.get('page') || 1;
-            const perPage = urlParams.get('n') || 10;
-            const backToList = document.getElementById('back-to-list');
-            
-            backToList.href = `restaurantListPage.html?page=${page}&n=${perPage}`;
-            
-            if (id) {
-                fetchRestaurantById(id);
+            return urlParams.get(param);
+        }
+
+        // Fetch restaurant details
+        async function fetchRestaurantDetails(id) {
+            try {
+                const response = await fetch(`http://localhost:3000/restaurants/${id}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('name').textContent = data["Restaurant Name"];
+                    document.getElementById('address').textContent = data.Address;
+                    document.getElementById('city').textContent = data.City;
+                    document.getElementById('cuisines').textContent = data.Cuisines;
+                    document.getElementById('cost').textContent = data["Average Cost for two"];
+                    document.getElementById('rating').textContent = data["Aggregate rating"];
+                } else {
+                    document.getElementById('restaurant-detail').innerHTML = '<p>Restaurant not found.</p>';
+                }
+            } catch (error) {
+                console.error('Error fetching restaurant details:', error);
+                document.getElementById('restaurant-detail').innerHTML = '<p>Error loading restaurant details.</p>';
+            }
+        }
+
+        // On page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const restaurantId = getQueryParam('id');
+            if (restaurantId) {
+                fetchRestaurantDetails(restaurantId);
+            } else {
+                document.getElementById('restaurant-detail').innerHTML = '<p>Restaurant ID not provided.</p>';
             }
         });
     </script>
